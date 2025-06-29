@@ -1,161 +1,233 @@
-# 🔍 LinkedIn Profile Finder
+# 🚀 LinkedIn Prospector - Application MCP avec Horizon Data Wave
 
-Application web moderne pour rechercher des profils LinkedIn en utilisant les outils MCP Horizon Data Wave.
+> **Application complète de prospection LinkedIn utilisant les APIs réelles d'Horizon Data Wave via le protocole MCP (Model Context Protocol)**
 
 ## ✨ Fonctionnalités
 
-- **Recherche intuitive** : Interface utilisateur moderne et responsive
-- **Critères multiples** : Recherche par nom, prénom, entreprise, localisation, poste ou mots-clés
-- **Résultats détaillés** : Affichage complet des informations de profil
-- **Integration MCP** : Utilise les outils Horizon Data Wave pour la recherche LinkedIn
-- **Interface multilingue** : Interface en français
+### 🔍 Recherche LinkedIn Avancée
+- **19 outils LinkedIn HDW disponibles** pour une prospection complète
+- Recherche par nom, prénom, entreprise, localisation, titre
+- Recherche avancée avec Sales Navigator
+- Recherche par email LinkedIn
+- Recherche d'entreprises via Google
 
-## 🛠️ Technologies utilisées
+### 👤 Profils et Données
+- Profils LinkedIn complets (expérience, formation, compétences)
+- Posts et réactions d'utilisateurs LinkedIn
+- Employés d'entreprises LinkedIn
+- Connexions utilisateurs
 
-- **Frontend** : HTML5, CSS3, JavaScript (Vanilla)
-- **Backend** : Node.js, Express.js
-- **APIs** : Outils MCP Horizon Data Wave
-- **Styling** : CSS moderne avec gradients et animations
+### 💬 Interactions LinkedIn  
+- Messages et conversations LinkedIn
+- Commentaires sur posts
+- Invitations de connexion
+- Publication de posts
 
-## 📦 Installation
+### 🛠️ Fonctionnalités Techniques
+- **Interface web moderne** sur port 3003
+- **Cache intelligent** (30 minutes TTL)
+- **Rate limiting** (15 requêtes/minute)
+- **Monitoring d'usage** en temps réel
+- **Vraies données LinkedIn** (pas de simulation)
 
-1. **Installer les dépendances** :
-   ```bash
-   npm install
-   ```
-
-2. **Démarrer le serveur** :
-   ```bash
-   npm start
-   ```
-
-3. **Ouvrir l'application** :
-   Rendez-vous sur `http://localhost:3000`
-
-## 🚀 Utilisation
-
-### Recherche de profils
-
-1. **Saisir les informations** :
-   - Prénom (obligatoire)
-   - Nom de famille (obligatoire)
-   - Type de recherche (entreprise, localisation, poste, mots-clés)
-   - Valeur de recherche correspondante
-   - Nombre de résultats souhaités
-
-2. **Lancer la recherche** :
-   - Cliquer sur "Rechercher"
-   - Les résultats s'affichent avec les détails des profils
-
-3. **Consulter les profils** :
-   - Voir les informations détaillées
-   - Accéder au profil LinkedIn complet
-   - Obtenir plus de détails si nécessaire
-
-### Types de recherche supportés
-
-- **Entreprise** : Recherche par nom d'entreprise actuelle
-- **Localisation** : Recherche par ville, région ou pays
-- **Poste/Titre** : Recherche par intitulé de poste
-- **Mots-clés** : Recherche libre dans les profils
-
-## 🔧 Configuration MCP
-
-### Outils Horizon Data Wave utilisés
-
-L'application utilise les outils MCP suivants :
-
-- `mcp_hdw_search_linkedin_users` - Recherche d'utilisateurs LinkedIn
-- `mcp_hdw_get_linkedin_profile` - Détails complets d'un profil
-- `mcp_hdw_get_linkedin_email_user` - Recherche par email
-- `mcp_hdw_linkedin_sn_search_users` - Recherche avancée Sales Navigator
-
-### Intégration dans Cursor
-
-Pour utiliser les vrais outils MCP dans votre environnement Cursor :
-
-1. Remplacez les fonctions `simulate*` dans `server.js`
-2. Utilisez directement les outils MCP disponibles
-3. Configurez vos tokens d'authentification si nécessaire
-
-## 📚 Structure du projet
+## 🏗️ Architecture
 
 ```
-linkedin-profile-finder/
-├── index.html          # Interface utilisateur principale
-├── styles.css          # Styles et design moderne
-├── script.js           # Logique frontend JavaScript
-├── server.js           # Serveur Node.js et API
-├── package.json        # Configuration npm
-└── README.md          # Documentation
+Interface Web (Port 3003) → Client MCP HDW → Serveur MCP Officiel HDW → Horizon Data Wave API → LinkedIn Data RÉELLES
 ```
 
-## 🎨 Interface utilisateur
+## 💰 Coûts et Usage
 
-- **Design moderne** : Interface épurée avec gradients et animations
-- **Responsive** : Adaptation automatique aux différentes tailles d'écran
-- **UX optimisée** : Feedback visuel, loading states, gestion d'erreurs
-- **Accessibilité** : Conception accessible avec labels et contrastes appropriés
+- **100 requêtes gratuites par mois**
+- **0,025€ par requête** après épuisement du quota gratuit
+- **Monitoring en temps réel** du nombre de requêtes utilisées
+- **Cache intelligent** pour économiser les requêtes
 
-## 🔍 Paramètres de recherche avancés
+## 🚀 Installation Rapide
 
-L'application supporte de nombreux paramètres de recherche LinkedIn :
+### Prérequis
+- Node.js 18+ installé
+- Compte Horizon Data Wave avec credentials
 
-- Nom et prénom exacts
-- Entreprise actuelle ou précédente
-- Localisation géographique
-- Secteur d'activité
-- Niveau d'expérience
-- Mots-clés dans le profil
-- Titre de poste
-- Et bien plus...
+### Installation Automatique
+```bash
+# 1. Cloner le repository
+git clone https://github.com/Lofp34/linkedin-prospector.git
+cd linkedin-prospector
 
-## 🚦 Gestion d'erreurs
+# 2. Exécuter le script d'installation
+chmod +x setup-hdw.sh
+./setup-hdw.sh
 
-- Validation côté client des champs obligatoires
-- Gestion des erreurs réseau et API
-- Messages d'erreur explicites en français
-- Fallback gracieux en cas d'échec
+# 3. Configurer vos credentials HDW
+# Éditez le fichier .env.hdw avec vos vrais credentials
+```
 
-## 📱 Responsive Design
+### Configuration Manuelle
+```bash
+# 1. Installer les dépendances
+npm install
 
-L'interface s'adapte parfaitement à :
-- Desktop (1200px+)
-- Tablette (768px - 1199px)
-- Mobile (< 768px)
+# 2. Créer le fichier .env.hdw
+echo 'HDW_ACCESS_TOKEN="votre_token_hdw_ici"' > .env.hdw
+echo 'HDW_ACCOUNT_ID="votre_account_id_ici"' >> .env.hdw
 
-## 🔐 Sécurité
+# 3. Lancer l'application
+source .env.hdw && npm run dev-hdw
+```
 
-- Validation des entrées utilisateur
-- Protection contre les injections
-- Gestion sécurisée des tokens API
-- CORS configuré pour la production
+## 🔧 Utilisation
 
-## 🚀 Déploiement
+### Démarrage
+```bash
+# Option 1: Via npm script
+source .env.hdw && npm run dev-hdw
 
-Pour déployer en production :
+# Option 2: Via variables d'environnement directes
+HDW_ACCESS_TOKEN="votre_token" HDW_ACCOUNT_ID="votre_id" node mcp-linkedin-client-hdw.js
+```
 
-1. Configurez les variables d'environnement
-2. Remplacez les fonctions de simulation par les vrais appels MCP
-3. Configurez un serveur web (nginx, Apache)
-4. Utilisez un process manager (PM2, Docker)
+### Interface Web
+- Ouvrez votre navigateur sur **http://localhost:3003**
+- Interface intuitive pour toutes les recherches LinkedIn
+- Résultats en temps réel avec données authentiques
+
+### APIs Disponibles
+
+#### Recherche d'utilisateurs
+```bash
+curl -X POST http://localhost:3003/api/search-linkedin \
+  -H "Content-Type: application/json" \
+  -d '{"firstName": "Laurent", "lastName": "Serre", "location": "Montpellier"}'
+```
+
+#### Recherche par email
+```bash
+curl -X POST http://localhost:3003/api/search-linkedin-email \
+  -H "Content-Type: application/json" \
+  -d '{"email": "contact@example.com"}'
+```
+
+#### Recherche d'entreprises
+```bash
+curl -X POST http://localhost:3003/api/search-companies \
+  -H "Content-Type: application/json" \
+  -d '{"companies": ["Google", "Microsoft"]}'
+```
+
+## 📋 Outils HDW Disponibles
+
+### 🔍 Recherche et Découverte
+- `search_linkedin_users` - Recherche d'utilisateurs LinkedIn
+- `linkedin_sn_search_users` - Recherche avancée Sales Navigator  
+- `get_linkedin_email_user` - Recherche par email
+- `get_linkedin_google_company` - Recherche d'entreprises via Google
+- `google_search` - Recherche Google générale
+
+### 👤 Profils et Détails
+- `get_linkedin_profile` - Profil LinkedIn complet
+- `get_linkedin_company` - Détails d'entreprise LinkedIn
+- `get_linkedin_company_employees` - Employés d'entreprise
+
+### 💬 Interactions et Messages
+- `get_linkedin_chat_messages` - Messages LinkedIn
+- `send_linkedin_chat_message` - Envoyer des messages
+- `get_linkedin_conversations` - Liste des conversations
+- `send_linkedin_connection` - Invitations de connexion
+
+### 📝 Posts et Contenu
+- `get_linkedin_user_posts` - Posts d'un utilisateur
+- `get_linkedin_user_reactions` - Réactions d'un utilisateur
+- `get_linkedin_post_comments` - Commentaires d'un post
+- `get_linkedin_post_reposts` - Reposts d'un post
+- `send_linkedin_post` - Publier un post
+- `send_linkedin_post_comment` - Commenter un post
+
+## 📁 Structure du Projet
+
+```
+linkedin-prospector/
+├── mcp-linkedin-client-hdw.js    # Client MCP principal
+├── index.html                    # Interface web responsive  
+├── styles.css                    # Styles CSS modernes
+├── package.json                  # Dépendances npm
+├── GUIDE-HORIZON-SETUP.md        # Guide de configuration HDW
+├── setup-hdw.sh                 # Script d'installation
+├── .env.hdw                      # Configuration HDW (à créer)
+└── public/                       # Fichiers statiques
+```
+
+## 🔒 Configuration Horizon Data Wave
+
+### Obtenir vos Credentials
+1. Inscription sur [Horizon Data Wave](https://horizondatawave.ai)
+2. Récupération de votre `HDW_ACCESS_TOKEN` (format JWT)
+3. Récupération de votre `HDW_ACCOUNT_ID` (UUID)
+
+### Configuration
+```bash
+# Fichier .env.hdw
+HDW_ACCESS_TOKEN="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+HDW_ACCOUNT_ID="97677466-dd8a-4bae-8e75-b1bfa9a3b482"
+```
+
+## 📊 Monitoring et Debug
+
+### Logs en Temps Réel
+- Connexion MCP HDW
+- Requêtes LinkedIn avec timing
+- Cache hits/misses
+- Compteur de requêtes utilisées
+- Erreurs d'API détaillées
+
+### Exemple de Logs
+```
+✅ Connexion MCP HDW réussie!
+🛠️ 19 outils HDW disponibles
+🔍 Recherche HDW LinkedIn: laurent serre
+💰 Requêtes HDW utilisées: 8/100
+⚡ Cache hit - Requête économisée!
+```
+
+## 🆘 Dépannage
+
+### Erreurs Courantes
+
+**Erreur: Variables d'environnement manquantes**
+```bash
+# Solution: Vérifier le fichier .env.hdw
+source .env.hdw && echo $HDW_ACCESS_TOKEN
+```
+
+**Erreur: MCP error -32601: Unknown tool**
+```bash
+# Solution: Utiliser les bons noms d'outils (sans préfixe mcp_hdw_)
+# Correct: search_linkedin_users
+# Incorrect: mcp_hdw_search_linkedin_users
+```
+
+**Erreur: API error: 412 Precondition Failed**
+```bash
+# Solution: Vérifier que le profile/email existe sur LinkedIn
+# Certains profils peuvent être privés ou inexistants
+```
 
 ## 🤝 Contribution
 
-Pour contribuer au projet :
-1. Fork le repository
-2. Créez une branche pour votre fonctionnalité
-3. Committez vos changements
-4. Poussez vers la branche
-5. Ouvrez une Pull Request
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Commit vos changements (`git commit -am 'Ajout nouvelle fonctionnalité'`)
+4. Push vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
+5. Créer une Pull Request
 
 ## 📄 Licence
 
-MIT License - voir le fichier LICENSE pour plus de détails.
+MIT License - voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## 📞 Support
+## 👨‍💻 Auteur
 
-Pour toute question ou problème :
-- Ouvrir une issue sur le repository
-- Consulter la documentation MCP Horizon Data Wave
-- Vérifier les logs du serveur pour le débogage 
+Développé avec ❤️ pour la prospection LinkedIn moderne
+
+---
+
+> **Note**: Cette application utilise les APIs officielles Horizon Data Wave pour accéder aux vraies données LinkedIn. Respectez les conditions d'utilisation de LinkedIn et d'Horizon Data Wave. 
