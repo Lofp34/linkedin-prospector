@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 LinkedIn Search Réel - MCP</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { background: #0077b5; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #005885; }
+        .results { margin-top: 30px; }
+        .profile-card { border: 1px solid #ddd; padding: 20px; margin-bottom: 15px; border-radius: 8px; }
+        .loading { text-align: center; padding: 20px; color: #666; }
+        .error { background: #ffe6e6; color: #cc0000; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .success { background: #e6ffe6; color: #006600; padding: 15px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 LinkedIn Search Réel</h1>
+            <p>Recherche réelle avec MCP Horizon Data Wave</p>
+        </div>
+
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="firstName">Prénom *</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Nom *</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="company">Entreprise</label>
+                <input type="text" id="company" name="company">
+            </div>
+            <div class="form-group">
+                <label for="location">Localisation</label>
+                <input type="text" id="location" name="location">
+            </div>
+            <div class="form-group">
+                <label for="count">Nombre de résultats</label>
+                <select id="count" name="count">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">🚀 Rechercher</button>
+        </form>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const params = Object.fromEntries(formData);
+            
+            if (!params.firstName || !params.lastName) {
+                showError('Prénom et nom obligatoires');
+                return;
+            }
+
+            showLoading();
+            
+            try {
+                const response = await fetch('/api/search-linkedin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(params)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResults(data.results);
+                    showSuccess(`${data.count} profil(s) trouvé(s)`);
+                } else {
+                    showError(data.error);
+                }
+                
+            } catch (error) {
+                showError('Erreur de connexion: ' + error.message);
+            }
+        });
+
+        function showLoading() {
+            document.getElementById('results').innerHTML = '<div class="loading">🔍 Recherche en cours...</div>';
+        }
+
+        function showError(message) {
+            document.getElementById('results').innerHTML = `<div class="error">❌ ${message}</div>`;
+        }
+
+        function showSuccess(message) {
+            const div = document.createElement('div');
+            div.className = 'success';
+            div.textContent = '✅ ' + message;
+            document.getElementById('results').prepend(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function displayResults(results) {
+            if (!results || results.length === 0) {
+                document.getElementById('results').innerHTML = '<div class="error">Aucun résultat trouvé</div>';
+                return;
+            }
+
+            const html = results.map(profile => `
+                <div class="profile-card">
+                    <h3>${profile.name || 'Nom non disponible'}</h3>
+                    <p><strong>Poste:</strong> ${profile.headline || 'Non spécifié'}</p>
+                    <p><strong>Localisation:</strong> ${profile.location || 'Non spécifiée'}</p>
+                    ${profile.url ? `<p><a href="${profile.url}" target="_blank">🔗 Voir le profil</a></p>` : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('results').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# CONFIGURATION HORIZON DATA WAVE
+# ==============================
+# Renommez ce fichier en .env et remplacez 'your_api_key_here' par votre vraie clé API
+HORIZON_API_KEY=your_api_key_here
+HORIZON_API_BASE=https://api.horizondatawave.ai
+
+# CONFIGURATION MCP
+# =================
+MCP_SERVER_PORT=3003
+WEB_CLIENT_PORT=3002
+DEBUG_MCP=true
+
+# CONFIGURATION APPLICATION
+# =========================
+DEFAULT_TIMEOUT=300
+MAX_RESULTS=100
+ENABLE_CACHE=false
+CACHE_DURATION=30
+
+# SÉCURITÉ & CORS
+# ===============
+ENABLE_CORS=true
+CORS_ORIGINS=http://localhost:3000,http://localhost:3002
+
+# LOGS
+# ====
+LOG_LEVEL=info
+VERBOSE_MCP_LOGS=false 

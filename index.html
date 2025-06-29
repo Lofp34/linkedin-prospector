@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Profils LinkedIn</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>🔍 LinkedIn Profile Finder</h1>
+                <p>Trouvez facilement des profils LinkedIn professionnels</p>
+            </div>
+        </header>
+
+        <main>
+            <div class="search-card">
+                <h2>Rechercher un profil LinkedIn</h2>
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="firstName">Prénom *</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Ex: Jean" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Nom de famille *</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Ex: Dupont" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="searchType">Type de recherche</label>
+                        <select id="searchType" name="searchType">
+                            <option value="company">Entreprise</option>
+                            <option value="location">Localisation</option>
+                            <option value="title">Poste/Titre</option>
+                            <option value="keywords">Mots-clés généraux</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="searchValue">Valeur de recherche</label>
+                        <input type="text" id="searchValue" name="searchValue" placeholder="Ex: Google, Paris, Développeur...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resultCount">Nombre de résultats</label>
+                        <select id="resultCount" name="resultCount">
+                            <option value="5">5 résultats</option>
+                            <option value="10" selected>10 résultats</option>
+                            <option value="20">20 résultats</option>
+                            <option value="50">50 résultats</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-btn">
+                        <span class="btn-text">Rechercher</span>
+                        <div class="loading-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div id="results" class="results-section" style="display: none;">
+                <h3>Résultats de la recherche</h3>
+                <div id="resultsContainer"></div>
+            </div>
+
+            <div id="error" class="error-message" style="display: none;"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,81 @@
+{
+  "name": "mcp-linkedin-app",
+  "version": "1.0.0",
+  "description": "Application LinkedIn MCP avec Horizon Data Wave (vraies APIs)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"node mcp-linkedin-client.js\" \"echo 'Interface: http://localhost:3002'\"",
+    "dev-hdw": "concurrently \"node mcp-linkedin-client-hdw.js\" \"echo 'Interface HDW: http://localhost:3003'\"",
+    "setup": "npm install && echo 'Configuration terminée'",
+    "setup-hdw": "npm install express-rate-limit @horizondatawave/mcp && echo 'HDW setup terminé. Configurez vos tokens dans un fichier .env.hdw'",
+    "test-hdw": "node -e \"console.log('Test HDW:', process.env.HDW_ACCESS_TOKEN ? 'Token configuré' : 'Token manquant')\"",
+    "cache-clear": "curl -X DELETE http://localhost:3003/api/hdw-cache/clear",
+    "status": "curl -s http://localhost:3002/api/status | jq '.'",
+    "status-hdw": "curl -s http://localhost:3003/api/status | jq '.'",
+    "start": "node mcp-linkedin-client.js",
+    "start-hdw": "node mcp-linkedin-client-hdw.js"
+  },
+  "keywords": [
+    "linkedin",
+    "mcp",
+    "horizon-data-wave",
+    "api",
+    "real-data",
+    "search",
+    "profiles"
+  ],
+  "author": "LinkedIn MCP App",
+  "license": "MIT",
+  "dependencies": {
+    "@horizondatawave/mcp": "^0.1.5",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "concurrently": "^8.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/user/mcp-linkedin-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/user/mcp-linkedin-app/issues"
+  },
+  "homepage": "https://github.com/user/mcp-linkedin-app#readme",
+  "mcp": {
+    "server": {
+      "name": "linkedin-horizon-server",
+      "version": "1.0.0",
+      "description": "Serveur MCP pour recherches LinkedIn via Horizon Data Wave",
+      "capabilities": {
+        "tools": [
+          "search_linkedin_users",
+          "get_linkedin_profile",
+          "search_linkedin_by_email",
+          "advanced_linkedin_search"
+        ]
+      }
+    },
+    "client": {
+      "name": "linkedin-web-client",
+      "version": "1.0.0",
+      "description": "Client web MCP pour interface utilisateur LinkedIn"
+    }
+  },
+  "horizon": {
+    "api_base": "https://api.horizondatawave.ai",
+    "endpoints": {
+      "search": "/linkedin/search",
+      "profile": "/linkedin/profile",
+      "email_search": "/linkedin/search-email",
+      "advanced_search": "/linkedin/advanced-search"
+    }
+  }
+}

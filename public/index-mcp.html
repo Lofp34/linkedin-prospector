@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 LinkedIn MCP - Application Autonome</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(45deg, #0077b5, #00a0dc);
+            color: white; 
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .status-connected { background: #4CAF50; color: white; }
+        .status-disconnected { background: #f44336; color: white; }
+        .status-connecting { background: #ff9800; color: white; }
+        
+        .main-content { padding: 40px; }
+        
+        .mcp-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .mcp-info h3 { color: #1976D2; margin-bottom: 10px; }
+        .mcp-info p { color: #424242; line-height: 1.6; }
+        
+        .search-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background: #0077b5;
+            color: white;
+        }
+        
+        .search-form { 
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .form-group { margin-bottom: 20px; }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #333;
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: #0077b5;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .btn-primary { 
+            background: linear-gradient(45deg, #0077b5, #00a0dc);
+            color: white; 
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,119,181,0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .tools-info {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .tools-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .tool-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .tool-name { font-weight: 600; color: #0077b5; margin-bottom: 5px; }
+        .tool-desc { font-size: 0.9em; color: #666; }
+        
+        .results { margin-top: 30px; }
+        .profile-card { 
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .profile-card:hover { transform: translateY(-3px); }
+        .profile-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .profile-image { 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            margin-right: 15px;
+            object-fit: cover;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        .profile-name { font-size: 1.4em; font-weight: 600; color: #333; }
+        .profile-title { color: #666; margin-bottom: 5px; }
+        .profile-company { color: #0077b5; font-weight: 500; }
+        .profile-location { color: #888; font-size: 0.9em; }
+        .profile-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #0077b5;
+            border: 1px solid #0077b5;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            background: #0077b5;
+            color: white;
+        }
+        
+        .loading { 
+            text-align: center; 
+            padding: 40px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .error { 
+            background: #fee; 
+            color: #c33; 
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #c33;
+            margin: 10px 0;
+        }
+        .success { 
+            background: #efe; 
+            color: #363; 
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #363;
+            margin: 10px 0;
+        }
+        
+        .raw-response {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2em; }
+            .main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div id="statusIndicator" class="status-indicator status-connecting">
+                🔄 Connexion MCP...
+            </div>
+            <h1>🚀 LinkedIn MCP</h1>
+            <p>Application autonome avec Model Context Protocol</p>
+        </div>
+
+        <div class="main-content">
+            <div class="mcp-info">
+                <h3>🔧 À propos de cette application</h3>
+                <p>Cette application utilise le <strong>Model Context Protocol (MCP)</strong> pour effectuer des recherches LinkedIn réelles via <strong>Horizon Data Wave</strong>. 
+                Elle fonctionne de manière autonome avec une architecture client-serveur MCP.</p>
+            </div>
+
+            <div id="toolsInfo" class="tools-info" style="display: none;">
+                <h3>🛠️ Outils MCP disponibles</h3>
+                <div id="toolsList" class="tools-list"></div>
+            </div>
+
+            <div class="search-tabs">
+                <button class="tab-button active" onclick="switchTab('basic')">
+                    🔍 Recherche basique
+                </button>
+                <button class="tab-button" onclick="switchTab('email')">
+                    📧 Par email
+                </button>
+                <button class="tab-button" onclick="switchTab('advanced')">
+                    🎯 Recherche avancée
+                </button>
+            </div>
+
+            <!-- Onglet recherche basique -->
+            <div id="tab-basic" class="search-form">
+                <h2>🔍 Recherche de profils LinkedIn</h2>
+                <form id="basicSearchForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">Prénom *</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Nom *</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company">Entreprise</label>
+                            <input type="text" id="company" name="company" placeholder="ex: Google, Microsoft...">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Localisation</label>
+                            <input type="text" id="location" name="location" placeholder="ex: Paris, Lyon...">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Titre/Poste</label>
+                            <input type="text" id="title" name="title" placeholder="ex: Développeur, Manager...">
+                        </div>
+                        <div class="form-group">
+                            <label for="count">Nombre de résultats</label>
+                            <select id="count" name="count">
+                                <option value="5">5 résultats</option>
+                                <option value="10" selected>10 résultats</option>
+                                <option value="20">20 résultats</option>
+                                <option value="50">50 résultats</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">🚀 Rechercher via MCP</button>
+                </form>
+            </div>
+
+            <!-- Onglet recherche par email -->
+            <div id="tab-email" class="search-form" style="display: none;">
+                <h2>📧 Recherche par email</h2>
+                <form id="emailSearchForm">
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required>
+                    </div>
+                    <button type="submit" class="btn-primary">🔍 Rechercher par email</button>
+                </form>
+            </div>
+
+            <!-- Onglet recherche avancée -->
+            <div id="tab-advanced" class="search-form" style="display: none;">
+                <h2>🎯 Recherche avancée (Sales Navigator)</h2>
+                <form id="advancedSearchForm">
+                    <div class="form-group">
+                        <label for="advancedCompanies">Entreprises (une par ligne)</label>
+                        <textarea id="advancedCompanies" name="companies" rows="3" placeholder="Google&#10;Microsoft&#10;Apple"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="advancedLocations">Localisations</label>
+                            <input type="text" id="advancedLocations" name="locations" placeholder="Paris, Lyon, Marseille">
+                        </div>
+                        <div class="form-group">
+                            <label for="advancedCount">Nombre de résultats</label>
+                            <select id="advancedCount" name="count">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">🎯 Recherche avancée</button>
+                </form>
+            </div>
+
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script>
+        let mcpStatus = 'connecting';
+        let availableTools = [];
+
+        // Vérifier le statut MCP au chargement
+        async function checkMCPStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                if (data.success && data.mcp_connected) {
+                    setMCPStatus('connected');
+                    displayMCPTools(data.tools);
+                } else {
+                    setMCPStatus('disconnected');
+                }
+            } catch (error) {
+                console.error('Erreur vérification statut MCP:', error);
+                setMCPStatus('disconnected');
+            }
+        }
+
+        function setMCPStatus(status) {
+            mcpStatus = status;
+            const indicator = document.getElementById('statusIndicator');
+            
+            switch (status) {
+                case 'connected':
+                    indicator.className = 'status-indicator status-connected';
+                    indicator.textContent = '✅ MCP Connecté';
+                    break;
+                case 'disconnected':
+                    indicator.className = 'status-indicator status-disconnected';
+                    indicator.textContent = '❌ MCP Déconnecté';
+                    break;
+                case 'connecting':
+                    indicator.className = 'status-indicator status-connecting';
+                    indicator.textContent = '🔄 Connexion MCP...';
+                    break;
+            }
+        }
+
+        function displayMCPTools(tools) {
+            const toolsInfo = document.getElementById('toolsInfo');
+            const toolsList = document.getElementById('toolsList');
+            
+            if (tools && tools.length > 0) {
+                availableTools = tools;
+                toolsInfo.style.display = 'block';
+                toolsList.innerHTML = tools.map(tool => `
+                    <div class="tool-card">
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-desc">${tool.description}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function switchTab(tabName) {
+            // Masquer tous les onglets
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Désactiver tous les boutons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Afficher l'onglet sélectionné
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // Gestionnaires de formulaires
+        document.getElementById('basicSearchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await performSearch('basic');
+        });
+
+        document.getElementById('emailSearchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await performSearch('email');
+        });
+
+        document.getElementById('advancedSearchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await performSearch('advanced');
+        });
+
+        async function performSearch(type) {
+            if (mcpStatus !== 'connected') {
+                showError('❌ Client MCP non connecté. Vérifiez que le serveur MCP est démarré.');
+                return;
+            }
+
+            const formData = getFormData(type);
+            const endpoint = getEndpoint(type);
+            
+            showLoading();
+            
+            try {
+                console.log(`🔍 Recherche ${type}:`, formData);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResults(data.data, data.raw_message);
+                    showSuccess(`✅ ${data.total} profil(s) trouvé(s) via MCP`);
+                } else {
+                    showError(data.error || 'Erreur lors de la recherche');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion: ' + error.message);
+            }
+        }
+
+        function getFormData(type) {
+            switch (type) {
+                case 'basic':
+                    const basicForm = document.getElementById('basicSearchForm');
+                    return Object.fromEntries(new FormData(basicForm));
+                case 'email':
+                    const emailForm = document.getElementById('emailSearchForm');
+                    return Object.fromEntries(new FormData(emailForm));
+                case 'advanced':
+                    const advancedForm = document.getElementById('advancedSearchForm');
+                    const formData = Object.fromEntries(new FormData(advancedForm));
+                    // Traiter les listes
+                    if (formData.companies) {
+                        formData.current_companies = formData.companies.split('\n').filter(c => c.trim());
+                        delete formData.companies;
+                    }
+                    if (formData.locations) {
+                        formData.locations = formData.locations.split(',').map(l => l.trim()).filter(l => l);
+                    }
+                    return formData;
+            }
+        }
+
+        function getEndpoint(type) {
+            switch (type) {
+                case 'basic': return '/api/search-linkedin';
+                case 'email': return '/api/search-email';
+                case 'advanced': return '/api/search-advanced';
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('results').innerHTML = `
+                <div class="loading">
+                    🔍 Recherche en cours via MCP Horizon Data Wave
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('results').innerHTML = `
+                <div class="error">${message}</div>
+            `;
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            document.getElementById('results').prepend(successDiv);
+            setTimeout(() => successDiv.remove(), 5000);
+        }
+
+        function displayResults(results, rawResponse = null) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (!results || results.length === 0) {
+                resultsDiv.innerHTML = '<div class="error">Aucun résultat trouvé</div>';
+                return;
+            }
+
+                        const html = results.map(profile => `
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-image">👤</div>
+                        <div>
+                            <div class="profile-name">${profile.name || 'Nom non disponible'}</div>
+                            <div class="profile-title">${profile.title || 'Titre non disponible'}</div>
+                        </div>
+                    </div>
+                    <div class="profile-company">🏢 ${profile.company || 'Entreprise non spécifiée'}</div>
+                    <div class="profile-location">📍 ${profile.location || 'Localisation non spécifiée'}</div>
+                    <div class="profile-actions">
+                        ${profile.url ? `<a href="${profile.url}" target="_blank" class="btn-secondary">🔗 Voir le profil</a>` : ''}
+                        <button class="btn-secondary" onclick="getProfileDetails('${profile.urn || profile.url || profile.name}')">📋 Détails complets</button>
+                    </div>
+                </div>
+            `).join('');
+
+            let finalHtml = html;
+            
+            // Ajouter la réponse brute si disponible
+            if (rawResponse) {
+                finalHtml += `
+                    <details style="margin-top: 20px;">
+                        <summary style="cursor: pointer; font-weight: 600; color: #0077b5;">🔍 Voir la réponse MCP brute</summary>
+                        <div class="raw-response">${rawResponse}</div>
+                    </details>
+                `;
+            }
+
+            resultsDiv.innerHTML = finalHtml;
+        }
+
+        async function getProfileDetails(userIdentifier) {
+            if (mcpStatus !== 'connected') {
+                showError('❌ Client MCP non connecté');
+                return;
+            }
+
+            try {
+                showLoading();
+                
+                const response = await fetch('/api/profile-details', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: userIdentifier })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Afficher les détails du profil (le texte formaté est directement dans data.message)
+                    displayProfileDetails(data.message, data.raw_message);
+                } else {
+                    showError(data.error);
+                }
+                
+            } catch (error) {
+                showError('Erreur récupération profil: ' + error.message);
+            }
+        }
+
+        function displayProfileDetails(profileText, rawResponse) {
+            const detailsHtml = `
+                <div class="profile-card" style="border: 2px solid #0077b5;">
+                    <h3>👤 Profil détaillé via MCP</h3>
+                    <div class="raw-response" style="background: white; border: none; white-space: pre-line;">${profileText || 'Aucun détail disponible'}</div>
+                </div>
+                ${rawResponse ? `
+                    <details style="margin-top: 10px;">
+                        <summary style="cursor: pointer; font-weight: 600; color: #0077b5;">🔍 Réponse MCP brute</summary>
+                        <div class="raw-response">${rawResponse}</div>
+                    </details>
+                ` : ''}
+            `;
+            
+            document.getElementById('results').innerHTML = detailsHtml;
+        }
+
+        // Vérifier le statut MCP au chargement
+        checkMCPStatus();
+        
+        // Revérifier périodiquement
+        setInterval(checkMCPStatus, 30000);
+    </script>
+</body>
+</html> 
